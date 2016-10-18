@@ -1,0 +1,33 @@
+Pattern Recognition Manual
+
+All codes need CET_perceptual colormaps installed (can be downloaded here: http://peterkovesi.com/projects/colourmaps/ or colormap specification needs to be changed in codes marked with an asterisk - *).
+
+PCA and clustering
+
+Input matfiles need to be in folders for their respective setting in a directory called “data” (e.g., ‘Documents/lavalakes/Nyiragongo/data/’).
+
+Main script: pca_on_lavalakeimages.m
+Needs subroutines:
+1) making figures
+plot_first_n_components_images.m*
+plot_contributions_to_components_in_time.m
+plot_data_in_pca_space.m
+
+2) clustering
+get_RMScc_values_for_clusters_images.m
+Needs subroutines:
+cluster_pca_space.m
+get_cluster_centers_and_reconstruct_images_distance.m*
+xcorr_cluster_images.m
+	plot_cluster_distance_running_avg.m
+
+All subroutines should work without any adjustment. Things to manually adjust in main script:
+Path to all datasets – line 10 (e.g., ‘Documents/lavalakes/’)
+Input dataset option – line 11 (e.g., 1 for Nyiragongo)
+Number of components to be used – line 283 (e.g., 2 for Nyiragongo – this is the most subjective part of the processing, but it turns out the choice doesn’t hugely influence the results as long as the ball park is the same, somewhere below 10 seems to be good)
+
+SOM
+
+Needs output from PCA codes as input files. Needs SOM toolbox installed (Version used here can be downloaded at: http://www.cis.hut.fi/projects/somtoolbox/, newer version available at: http://research.ics.aalto.fi/software/somtoolbox/). Run main script cell-by-cell to be able to ignore warnings/errors from toolbox vs Matlab version compatibility issues, otherwise later parts of script won’t finish and output will not be saved.
+
+Main script: som_lavalake_images.m
