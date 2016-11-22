@@ -205,7 +205,7 @@ elseif dataset_option == 7;
     
 elseif dataset_option == 8;
     
-    %%% Jun 17
+    %%% Jun 18
     
     datapath = 'Halemaumau/data/';
     fn = strcat(mypath,datapath,'HMM_18June2013_Tall.mat');
@@ -230,13 +230,29 @@ else
     sprintf('Please set valid dataset option')
 end
 
+%% limit to first n hours
+
+number_of_hours = 12;
+
+if alltime(end)-alltime(1) > number_of_hours/24
+    upper_limit = find(alltime <= alltime(1)+number_of_hours/24, 1,'last');
+    alltime = alltime(1:upper_limit);
+    alldata = alldata(1:upper_limit,:);
+end
+
 %% normalization
 
 alldata_norm = [];
-for ii = 1:size(alldata,1)
-    alldata_sub = (alldata(ii,:)-min(alldata(ii,:)))./sum(alldata(ii,:)-min(alldata(ii,:)));
-    alldata_norm = [alldata_norm; alldata_sub]; 
-end
+% for ii = 1:size(alldata,1)
+%     alldata_sub = (alldata(ii,:)-min(alldata(ii,:)))./sum(alldata(ii,:)-min(alldata(ii,:)));
+%     alldata_norm = [alldata_norm; alldata_sub]; 
+% end
+
+alldata(isnan(alldata)) = 0;
+
+minall = min(alldata')'*ones(1,n_rows_data*n_cols_data);
+meanall = sum(alldata')'*ones(1,n_rows_data*n_cols_data);
+alldata_norm = (alldata - minall)./(meanall-minall);
 
 temp_im = vec2mat(alldata(1,:),n_rows_data);
 temp_im = temp_im';

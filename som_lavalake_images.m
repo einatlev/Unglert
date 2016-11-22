@@ -27,9 +27,10 @@ if dataset_option == 1
     
     %%%%%%%% Nyiragongo
     
-    datapath = 'Nyiragongo/results/';
-    fn = strcat(mypath,datapath,'Nyiragongo_full_pca_results.mat');
+    datapath = 'Nyiragongo/results/Nyiragongo_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Nyiragongo/results/Nyiragongo_full_'; % needs to be loaded again so it won't be overwritten
     
 elseif dataset_option == 2;
     
@@ -37,25 +38,28 @@ elseif dataset_option == 2;
     
     %%% Dec 02 Erebus
     
-    datapath = 'Erebus/results/';
-    fn = strcat(mypath,datapath,'ErebusDec02_full_pca_results.mat');
+    datapath = 'Erebus/results/ErebusDec02_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Erebus/results/ErebusDec02_full_';
     
 elseif dataset_option == 3;
     
     %%% Dec 16
     
-    datapath = 'Erebus/results/';
-    fn = strcat(mypath,datapath,'ErebusDec16_full_pca_results.mat');
+    datapath = 'Erebus/results/ErebusDec16_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Erebus/results/ErebusDec16_full_';
     
 elseif dataset_option == 4;
     
     %%% Dec 30
     
-    datapath = 'Erebus/results/';
-    fn = strcat(mypath,datapath,'ErebusDec30_full_pca_results.mat');
+    datapath = 'Erebus/results/ErebusDec30_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Erebus/results/ErebusDec30_full_';
     
 elseif dataset_option == 5;
     
@@ -63,39 +67,46 @@ elseif dataset_option == 5;
     
     %%% Jan 16 velocity
     
-    datapath = 'Halemaumau/results/';
-    fn = strcat(mypath,datapath,'HalemaumauJan16vel_full_pca_results.mat');
+    datapath = 'Halemaumau/results/HalemaumauJan16vel_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Halemaumau/results/HalemaumauJan16vel_full_';
     
 elseif dataset_option == 6;
     
     %%% Aug 22
     
-    datapath = 'Halemaumau/results/';
-    fn = strcat(mypath,datapath,'HalemaumauAug22_full_pca_results.mat');
+    datapath = 'Halemaumau/results/HalemaumauAug22_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Halemaumau/results/HalemaumauAug22_full_';
     
 elseif dataset_option == 7;
     
     %%% Jan 16
     
-    datapath = 'Halemaumau/results/';
-    fn = strcat(mypath,datapath,'HalemaumauJan16_full_pca_results.mat');
+    datapath = 'Halemaumau/results/HalemaumauJan16_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Halemaumau/results/HalemaumauJan16_full_';
     
 elseif dataset_option == 8;
     
     %%% Jun 17
     
-    datapath = 'Halemaumau/results/';
-    fn = strcat(mypath,datapath,'HalemaumauJun18_full_pca_results.mat');
+    datapath = 'Halemaumau/results/HalemaumauJun18_full_';
+    fn = strcat(mypath,datapath,'pca_results.mat');
     load(fn);
+    datapath = 'Halemaumau/results/HalemaumauJun18_full_';
     
 else
     sprintf('Please set valid dataset option')
 end
 
-clearvars -except alltime alldata_norm downsampleno
+% get factor for map size from ratio of eigenvectors
+eig_factor = explained(1)/explained(2);
+
+clearvars -except alltime alldata_norm downsampleno eig_factor mypath datapath
 %% SOM
 
 sD = som_data_struct(alldata_norm);
@@ -107,7 +118,7 @@ newdata = sD.data(order,:);
 olddata = sD;
 sD.data = newdata;
 
-sM = som_make(sD,'lattice','rect','mapsize','small');
+sM = som_make(sD,'lattice','rect','msize',[round(5*eig_factor) 5]);
 
 no_row = sM.topol.msize(1);
 no_col = sM.topol.msize(2);
