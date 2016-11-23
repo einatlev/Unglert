@@ -1,4 +1,4 @@
-function [cluster_cc,RMScc]=xcorr_cluster_images(number_of_clusters,cluster_images,savepath,savefilename,save_y_n, graphics)
+function [cluster_cc,RMScc]=xcorr_cluster_images(number_of_clusters,cluster_images,savepath,savefilename,save_y_n)
 %XCORR cluster images
 %   input: matrix with image vectors (rows: pixels, columns: images),
 %   number_of_clusters, strings for path and filename for
@@ -23,8 +23,7 @@ for cluster1 = 1:number_of_clusters
 end
 
 %% plot correlation coefficients
-if (graphics)
-    
+
 figure
 hold on
 imagesc(1:number_of_clusters,1:number_of_clusters,cluster_cc)
@@ -38,7 +37,6 @@ colorbar('Location','EastOutside')
 
 if save_y_n == 'y'
     saveas(gcf,strcat(savepath,'clusterspectra_xcorr',savefilename,'.fig'))
-end
 end
 
 close all

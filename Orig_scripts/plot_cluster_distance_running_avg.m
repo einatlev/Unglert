@@ -34,7 +34,7 @@ for cluster_index = 1:number_of_clusters
     else
         meandistance(cluster_index) = mean(pc_space_distance(my_clusters == cluster_index,cluster_index));
     end 
-    mylegend = [mylegend; strcat('cluster ',num2str(cluster_index),', ',sprintf('%10.5', meandistance(cluster_index)))];
+    mylegend = [mylegend; strcat('cluster ',num2str(cluster_index),', ',num2str(meandistance(cluster_index),'%.5f'))];
 end
 hold off
 legend(mylegend)

@@ -1,4 +1,4 @@
-function [centers,reconstructed_images,pc_space_distance] = get_cluster_centers_and_reconstruct_images_distance(my_clusters,number_of_clusters,score,coeff,pca_mu,maxpc,time_vector,original_data,downsampleno,savepath,savefilename,save_y_n, graphics)
+function [centers,reconstructed_images,pc_space_distance] = get_cluster_centers_and_reconstruct_images_distance(my_clusters,number_of_clusters,score,coeff,pca_mu,maxpc,time_vector,original_data,downsampleno,savepath,savefilename,save_y_n)
 %GET cluster centers for hierarchical clusters and reconstruct spectra
 %   input: cluster membership my_clusters, score and coeff from PCA,
 %    maximum number of principal components
@@ -29,23 +29,18 @@ for cluster_index = 1:number_of_clusters
     reconstructed_images(:,cluster_index) = summed_spectrum + pca_mu';
 end
 
-if (graphics)
-    
-    figure
-    hold on
-    set(gcf,'Colormap',feval('linear_kry_5_98_c75_n256'))
-    h = [];
-    for ii = 1:number_of_clusters
-        h(ii)=subtightplot(number_of_clusters,1,ii,[],[],0.1);
-        imagesc(reshape(reconstructed_images(:,ii),...
-            numel(reconstructed_images(:,ii))/downsampleno,...
-            downsampleno));
-        set(gca,'xtick',[])
-        set(gca,'ytick',[])
-    end
-    if save_y_n == 'y'
-        saveas(gcf,strcat(savepath,savefilename,'reconstructed_images.fig'),'fig')
-    end
+figure
+hold on
+set(gcf,'Colormap',feval('linear_kry_5_98_c75_n256'))
+h = [];
+for ii = 1:number_of_clusters
+    h(ii)=subtightplot(number_of_clusters,1,ii,[],[],0.1);
+    imagesc(vec2mat(reconstructed_images(:,ii),downsampleno))
+    set(gca,'xtick',[])
+    set(gca,'ytick',[])
+end
+if save_y_n == 'y'
+    saveas(gcf,strcat(savepath,savefilename,'reconstructed_images.fig'),'fig')
 end
 
 

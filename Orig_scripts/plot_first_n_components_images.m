@@ -19,8 +19,7 @@ set(gcf,'Colormap',feval('linear_kry_5_98_c75_n256'))
 h = [];
 for ii = 1:number_of_components
     h(ii)=subtightplot(number_of_components,1,ii,[],[],0.1);
-    imagesc(reshape(pca_coefficients(:,ii),...
-        downsampleno,numel(pca_coefficients(:,ii))/downsampleno))
+    imagesc(vec2mat(pca_coefficients(:,ii),downsampleno))
     set(gca,'ytick',[])
     set(gca,'xtick',[])
     grid on
