@@ -24,7 +24,7 @@ if dataset_option == 1
     dt = 5; % s, sampling interval
     
     alldata = Nyirgongo_March10(2:size(Nyirgongo_March10,1),:);
-    alltime = [datenum(2012,3,10,0,0,5):dt/(3600*24):datenum(2012,3,10,0,0,5)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2012,3,10,0,0,5):dt/(3600*24):datenum(2012,3,10,0,0,5)+(dt/(3600*24))*(size(alldata,1)-1)];
     
 elseif dataset_option == 2;
     
@@ -52,17 +52,17 @@ elseif dataset_option == 2;
         alldata((ii-1)*size(Dec_02,2)+1:ii*size(Dec_02,2),:) = squeeze(Dec_02(ii,:,:));
     end
     
-    alltime = [datenum(2004,12,2,0,0,0):dt/(3600*24):datenum(2004,12,2,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2004,12,2,0,0,0):dt/(3600*24):datenum(2004,12,2,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
     
     % remove times with bad values
     [badrows] = find(mean(alldata,2) <= 1e-7);
-    original_length = length(alltime);
+    original_length = length(alltimes);
     
-    index = true(size(alltime));
+    index = true(size(alltimes));
     index(unique(badrows)) = false;
     
     alldata = alldata(index,:);
-    alltime = alltime(index);
+    alltimes = alltimes(index);
     sprintf('%d out of %d samples were discarded',length(unique(badrows)),original_length)
     
 elseif dataset_option == 3;
@@ -87,8 +87,8 @@ elseif dataset_option == 3;
     alldata = double(Dec_16);
     alldata = alldata([1:4740 4742:end],:);
     
-    alltime = datenum(2004,12,16,0,0,0)+timesec(1:length(timesec))./(3600*24);
-    alltime = alltime([1:4740 4742:end]);
+    alltimes = datenum(2004,12,16,0,0,0)+timesec(1:length(timesec))./(3600*24);
+    alltimes = alltimes([1:4740 4742:end]);
     
     savepath = strcat(mypath,'Erebus/results/ErebusDec16_full');
     
@@ -112,7 +112,7 @@ elseif dataset_option == 4;
     dt = 2.039; % s, sampling interval
     alldata = double(Dec_30_04);
     
-    alltime = [datenum(2004,12,30,0,0,0):dt/(3600*24):datenum(2004,12,30,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2004,12,30,0,0,0):dt/(3600*24):datenum(2004,12,30,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
     
     savepath = strcat(mypath,'Erebus/results/ErebusDec30_full');
     
@@ -131,7 +131,7 @@ elseif dataset_option == 5;
     
     dt = 5; % s, sampling interval
     alldata = [allVx_firsthalf];
-    alltime = [datenum(2011,1,16,17,0,0):dt/(3600*24):datenum(2011,1,16,17,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2011,1,16,17,0,0):dt/(3600*24):datenum(2011,1,16,17,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
     
     savepath = strcat(mypath,'Halemaumau/results/HalemaumauJan16vel_full');
     
@@ -142,7 +142,7 @@ elseif dataset_option == 6;
     
     %%% Aug 22
     
-    datapath = 'Halemaumau/data/';
+    datapath = 'Halemaumau/UnglertData/';
     fn = strcat(mypath,datapath,'kathi_aug22nd.mat');
     load(fn);
     
@@ -151,7 +151,7 @@ elseif dataset_option == 6;
     
     dt = 5; % s, sampling interval
     alldata = kathi_Aug22nd;
-    alltime = [datenum(2012,8,22,0,0,0):dt/(3600*24):datenum(2012,8,22,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2012,8,22,0,0,0):dt/(3600*24):datenum(2012,8,22,0,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
     
     savepath = strcat(mypath,'Halemaumau/results/HalemaumauAug22_full');
     
@@ -180,7 +180,7 @@ elseif dataset_option == 7;
     dt = 5; % s, sampling interval
     alldata = [kathi_January_16th_17; kathi_January_16th_18; ...
         kathi_January_16th_19; kathi_January_16th_20];
-    alltime = [datenum(2011,1,16,17,0,0):dt/(3600*24):datenum(2011,1,16,17,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
+    alltimes = [datenum(2011,1,16,17,0,0):dt/(3600*24):datenum(2011,1,16,17,0,0)+(dt/(3600*24))*(size(alldata,1)-1)];
     
     savepath = strcat(mypath,'Halemaumau/results/HalemaumauJan16_full');
     
@@ -203,7 +203,7 @@ elseif dataset_option == 8;
     n_cols_data = 235;
     
     alldata = Tall_18;
-    alltime = times_18;
+    alltimes = times_18;
     
     savepath = strcat(mypath,'Halemaumau/results/HalemaumauJun18_full');
     
@@ -269,7 +269,7 @@ elseif dataset_option == 13
     dt=0.1;
     n_rows_data = 87;
     n_cols_data = 99;
-    alldata = Tall;
+    alldata = Tall';
     alltimes = times_Rec122;
     
 elseif dataset_option == 14

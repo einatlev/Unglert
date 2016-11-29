@@ -2,14 +2,13 @@
 % create SOM for lava lake images
 % run cell by cell
 
-clear all
 close all
 clc
 
 % load data
 
-mypath = '~/Documents/Dokumente/Uni/PhD/Vancouver/UBC PhD/SOM/from_Einat/';
-dataset_option = 1;
+mypath = '/local/data/lava/einatlev/Lakes/';
+
 
 % dataset_option numbers
 % 1 Nyiragongo 10 March 2012
@@ -24,92 +23,76 @@ dataset_option = 1;
 % load data
 
 if dataset_option == 1
-    
-    %%%%%%%% Nyiragongo
-    
+    %%%%%%%% Nyiragongo   
     datapath = 'Nyiragongo/results/Nyiragongo_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Nyiragongo/results/Nyiragongo_full_'; % needs to be loaded again so it won't be overwritten
-    
-elseif dataset_option == 2;
-    
+    savepath = 'Nyiragongo/UnglerResults/'; 
+elseif dataset_option == 2;  
     %%%%%%%%%% Erebus
-    
     %%% Dec 02 Erebus
-    
     datapath = 'Erebus/results/ErebusDec02_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Erebus/results/ErebusDec02_full_';
+    savepath = 'Erebus/UnglerResults/';
     
 elseif dataset_option == 3;
-    
     %%% Dec 16
-    
     datapath = 'Erebus/results/ErebusDec16_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Erebus/results/ErebusDec16_full_';
-    
+    datapath = 'Erebus/results/ErebusDec16_full_';   
 elseif dataset_option == 4;
-    
     %%% Dec 30
-    
     datapath = 'Erebus/results/ErebusDec30_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
     datapath = 'Erebus/results/ErebusDec30_full_';
-    
 elseif dataset_option == 5;
     
     %%%%%%% Halemaumau
-    
     %%% Jan 16 velocity
-    
     datapath = 'Halemaumau/results/HalemaumauJan16vel_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Halemaumau/results/HalemaumauJan16vel_full_';
-    
+    datapath = 'Halemaumau/results/HalemaumauJan16vel_full_';    
 elseif dataset_option == 6;
-    
     %%% Aug 22
-    
     datapath = 'Halemaumau/results/HalemaumauAug22_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Halemaumau/results/HalemaumauAug22_full_';
-    
-elseif dataset_option == 7;
-    
-    %%% Jan 16
-    
+    savepath = 'Halemaumau/results/HalemaumauAug22_full_';    
+elseif dataset_option == 7;   
+    %%% Jan 16 thermal
     datapath = 'Halemaumau/results/HalemaumauJan16_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
     datapath = 'Halemaumau/results/HalemaumauJan16_full_';
-    
 elseif dataset_option == 8;
-    
-    %%% Jun 17
-    
-    datapath = 'Halemaumau/results/HalemaumauJun18_full_';
-    fn = strcat(mypath,datapath,'pca_results.mat');
-    load(fn);
-    datapath = 'Halemaumau/results/HalemaumauJun18_full_';
-    
+    %%% Jun 17    
+    datapath = 'Halemaumau/UnglerResults/HalemaumauJun18_full_';
+    savepath = 'Halemaumau/UnglerResults/';    
+ elseif dataset_option == 9
+    datapath = 'Marum/UnglerResults/Seq47/';
+elseif dataset_option == 10
+    datapath = 'Marum/UnglerResults/Seq48/';
+elseif dataset_option == 11
+    datapath = 'Marum/UnglerResults/Seq56/';
+elseif dataset_option == 12
+    datapath = '/Masaya/UnglerResults/Rec121/';
+elseif dataset_option == 13
+    datapath = '/Masaya/UnglerResults/Rec122/';
+elseif dataset_option == 14
+    datapath = '/Masaya/UnglerResults/Rec123/';
 else
     sprintf('Please set valid dataset option')
 end
 
+fn = strcat(mypath,datapath,'_pca_results.mat');
+load(fn);
+c=clock;
+disp (['PCA data loaded for ', datapath,'  ', num2str(c(4:6))])
+
 % get factor for map size from ratio of eigenvectors
 eig_factor = explained(1)/explained(2);
 
-clearvars -except alltime alldata_norm downsampleno eig_factor mypath datapath
+clearvars -except dataset_option alltime alldata_norm downsampleno eig_factor mypath datapath
 %% SOM
 
-sD = som_data_struct(alldata_norm);
+if (ismember(dataset_option, [9 10 11]))
+    sD = som_data_struct(alldata_norm(:,1:10:end));
+else
+    sD = som_data_struct(alldata_norm);
+end
+c=clock;
+disp(['som_data_structure constructed for ', datapath,'  ', num2str(c(4:6))])
+
 
 % randomize in time
 datale = size(sD.data,1);
@@ -119,6 +102,8 @@ olddata = sD;
 sD.data = newdata;
 
 sM = som_make(sD,'lattice','rect','msize',[round(5*eig_factor) 5]);
+c=clock;
+disp (['som_make finished for ',datapath,'  ', num2str(c(4:6))])
 
 no_row = sM.topol.msize(1);
 no_col = sM.topol.msize(2);
@@ -128,6 +113,9 @@ savefn = strcat(mypath,datapath,'SOM_',num2str(no_row),'x',num2str(no_col),'_');
 %% plot umat
 
 Bmus = som_bmus(sM, sD);
+c=clock;
+disp (['som_bmus finished for ',datapath,'  ', num2str(c(4:6))])
+
 
 colormap(1-gray)
 figure(1)
@@ -139,6 +127,9 @@ saveas(gcf,strcat(savefn,'umat.fig'),'fig')
 
 U = som_umat(sM);
 Um = U(1:2:size(U,1),1:2:size(U,2));
+c=clock;
+disp (['som_umat finished for ',datapath,'  ', num2str(c(4:6))])
+
 
 C = som_colorcode(sM,'rgb2');
 figure(2)
@@ -147,6 +138,9 @@ title('Color coding + distance matrix')
 saveas(gcf,strcat(savefn,'color_distance.fig'),'fig')
 
 myhits = som_hits(sM,sD);
+c = clock;
+disp (['som_hits finished for ',datapath,'  ', num2str(c(4:6))])
+
 
 %% plot timeline in BMU colors
 
@@ -170,6 +164,11 @@ hold off
 
 saveas(gcf,strcat(savefn,'color_timeline.fig'),'fig')
 
+%% save everything
+
+save(strcat(savefn,'som_results.mat'))
+disp (['Mid-way saving finished for ',datapath,'  ', num2str(c(4:6))])
+
 %% get some additional output params for saving
 
 [qe,te] = som_quality(sM,sD);
@@ -183,7 +182,9 @@ hold on
 for ii = 1:no_row
     for jj = 1:no_col
         subtightplot(no_row,no_col,(ii-1)*no_col + jj,[],0.1,0.1)
-        imagesc(vec2mat(sM.codebook(ii+(jj-1)*no_row,:),downsampleno))
+        imagesc(reshape(sM.codebook(ii+(jj-1)*no_row,:), ...
+            numel(sM.codebook(ii+(jj-1)*no_row,:))/downsampleno, downsampleno));
+        
         set(gca,'Ydir','norm')
         set(gca,'XTickLabel',[])
         set(gca,'YTickLabel',[])
